@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NC State Placement Prep</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== WELCOME SCREEN ===== -->
+<div id="screen-welcome" class="screen active">
+  <div class="welcome-hero">
+    <div class="wolf-logo">🐺</div>
+    <h1>NC State<br>Placement Prep</h1>
+    <p class="tagline">Ace your Math &amp; Chemistry placement tests</p>
+  </div>
+  <div class="subject-cards">
+    <button class="subject-card calc-card" onclick="App.selectSubject('calc')">
+      <div class="card-icon">📐</div>
+      <h2>Math Placement</h2>
+      <p>Algebra through Calculus</p>
+      <div class="card-meta">6 topics &bull; 60+ questions</div>
+    </button>
+    <button class="subject-card chem-card" onclick="App.selectSubject('chem')">
+      <div class="card-icon">⚗️</div>
+      <h2>Chemistry Placement</h2>
+      <p>General Chemistry concepts</p>
+      <div class="card-meta">9 topics &bull; 72+ questions</div>
+    </button>
+  </div>
+  <div class="welcome-stats">
+    <div class="wstat"><span id="stat-xp">0</span><label>Total XP</label></div>
+    <div class="wstat"><span id="stat-answered">0</span><label>Questions Answered</label></div>
+    <div class="wstat"><span id="stat-best-streak">0</span><label>Best Streak</label></div>
+  </div>
+</div>
+
+<!-- ===== SUBJECT SCREEN ===== -->
+<div id="screen-subject" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="App.goBack()">&#8592; Back</button>
+    <div class="header-title">
+      <span id="subj-icon"></span>
+      <h2 id="subj-name"></h2>
+    </div>
+    <div class="xp-badge">⭐ <span id="subj-xp">0</span> XP</div>
+  </div>
+
+  <div class="mode-strip">
+    <button class="mode-btn active-mode" id="mode-quiz" onclick="App.setMode('quiz')">
+      📝 Quiz
+    </button>
+    <button class="mode-btn" id="mode-flash" onclick="App.setMode('flash')">
+      🃏 Flashcards
+    </button>
+    <button class="mode-btn" id="mode-ref" onclick="App.setMode('ref')">
+      📖 Reference
+    </button>
+  </div>
+
+  <!-- Quiz Mode: Topic Grid -->
+  <div id="mode-quiz-content" class="mode-content">
+    <div class="section-label">Choose a Topic — or practice everything:</div>
+    <button class="start-all-btn" onclick="App.startQuiz('all')">
+      ⚡ Practice All Topics
+    </button>
+    <div id="topic-grid" class="topic-grid"></div>
+  </div>
+
+  <!-- Flashcard Mode -->
+  <div id="mode-flash-content" class="mode-content hidden">
+    <div class="section-label">Flip through key formulas &amp; concepts:</div>
+    <button class="start-all-btn" onclick="App.startFlashcards()">
+      🃏 Start Flashcard Deck
+    </button>
+    <div id="flash-preview" class="flash-preview"></div>
+  </div>
+
+  <!-- Reference Mode -->
+  <div id="mode-ref-content" class="mode-content hidden">
+    <div id="reference-content" class="reference-content"></div>
+  </div>
+</div>
+
+<!-- ===== QUIZ SCREEN ===== -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-header">
+    <button class="back-btn" onclick="App.exitQuiz()">&#8592; Exit</button>
+    <div class="quiz-stats">
+      <div class="streak-display" id="streak-display">
+        <span id="streak-icon">🔥</span>
+        <span id="streak-count">0</span>
+      </div>
+      <div class="score-display">
+        <span id="quiz-score">0</span> pts
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="q-counter" id="q-counter">1 / 10</div>
+  </div>
+
+  <div class="question-card" id="question-card">
+    <div class="question-topic-label" id="q-topic-label"></div>
+    <div class="question-text" id="question-text"></div>
+    <div class="options-grid" id="options-grid"></div>
+    <div class="explanation-box hidden" id="explanation-box">
+      <div class="exp-label" id="exp-label"></div>
+      <div class="exp-text" id="exp-text"></div>
+    </div>
+  </div>
+
+  <div class="quiz-footer">
+    <div id="xp-popup" class="xp-popup hidden"></div>
+    <button class="next-btn hidden" id="next-btn" onclick="App.nextQuestion()">
+      Next Question &#8594;
+    </button>
+  </div>
+</div>
+
+<!-- ===== RESULTS SCREEN ===== -->
+<div id="screen-results" class="screen">
+  <div class="results-container">
+    <div class="results-emoji" id="results-emoji">🎉</div>
+    <h2 id="results-title">Quiz Complete!</h2>
+    <div class="score-ring">
+      <svg viewBox="0 0 120 120" class="ring-svg">
+        <circle cx="60" cy="60" r="50" class="ring-bg"/>
+        <circle cx="60" cy="60" r="50" class="ring-fill" id="ring-fill"/>
+      </svg>
+      <div class="ring-label">
+        <div class="ring-pct" id="ring-pct">0%</div>
+        <div class="ring-sub" id="ring-sub">0 / 0</div>
+      </div>
+    </div>
+    <div class="results-message" id="results-message"></div>
+    <div class="results-details">
+      <div class="rstat"><span id="r-score">0</span><label>Points Earned</label></div>
+      <div class="rstat"><span id="r-streak">0</span><label>Best Streak</label></div>
+      <div class="rstat"><span id="r-xp">0</span><label>XP Gained</label></div>
+    </div>
+    <div class="results-btns">
+      <button class="btn-primary" onclick="App.startQuiz(App.state.topicId)">🔄 Retry</button>
+      <button class="btn-secondary" onclick="App.showSubjectScreen()">📋 Topics</button>
+      <button class="btn-outline" onclick="App.goHome()">🏠 Home</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FLASHCARDS SCREEN ===== -->
+<div id="screen-flashcards" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="App.showSubjectScreen()">&#8592; Back</button>
+    <div class="header-title">
+      <h2>Flashcards</h2>
+    </div>
+    <div class="fc-counter" id="fc-counter">1 / 1</div>
+  </div>
+
+  <div class="flashcard-area">
+    <div class="flashcard" id="flashcard" onclick="App.flipCard()">
+      <div class="card-inner" id="card-inner">
+        <div class="card-front">
+          <div class="card-side-label">TERM / FORMULA</div>
+          <div class="card-front-text" id="card-front"></div>
+          <div class="tap-hint">Tap to reveal &#8594;</div>
+        </div>
+        <div class="card-back">
+          <div class="card-side-label">ANSWER</div>
+          <div class="card-back-text" id="card-back"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc-controls">
+    <button class="fc-btn fc-prev" onclick="App.prevCard()">&#8592; Prev</button>
+    <div class="fc-dots" id="fc-dots"></div>
+    <button class="fc-btn fc-next" onclick="App.nextCard()">Next &#8594;</button>
+  </div>
+
+  <div class="fc-verdict">
+    <button class="verdict-btn verdict-no" onclick="App.markCard(false)">
+      😕 Need Practice
+    </button>
+    <button class="verdict-btn verdict-yes" onclick="App.markCard(true)">
+      ✅ Got It!
+    </button>
+  </div>
+  <div class="fc-progress-text" id="fc-progress-text">Mastered: 0 of 0</div>
+</div>
+
+<!-- ===== CONFETTI CANVAS ===== -->
+<canvas id="confetti-canvas"></canvas>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
